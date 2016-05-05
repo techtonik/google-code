@@ -17,24 +17,25 @@
 class PragmaHandler(object):
   """Class that handles the conversion of pragmas."""
 
-  def __init__(self, warning_method):
+  def __init__(self, warning_method, summary_italic):
     """Create a pragma handler.
 
     Args:
         warning_method: A function to call to display a warning message.
     """
     self._warning_method = warning_method
+    self._summary_italic = summary_italic
 
   def HandlePragma(self,
                    input_line,
-                   unused_output_stream,
+                   output_stream,
                    pragma_type,
                    pragma_value):
     """Handle a parsed pragma directive.
 
     Args:
         input_line: The line number this match occurred on.
-        unused_output_stream: Output Markdown file.
+        output_stream: Output Markdown file.
         pragma_type: The pragma's type.
         pragma_value: The pragma's value, trimmed.
     """
@@ -42,12 +43,15 @@ class PragmaHandler(object):
     # Google Code supports, so simply notify the user a pragma
     # was matched and that they might want to do something about it.
     if pragma_type == "summary":
-      self._warning_method(
-          input_line,
-          u"A summary pragma was used for this wiki:\n"
-          "\t{0}\n"
-          "Consider moving it to an introductory paragraph."
-          .format(pragma_value))
+      if not self._summary_italic:
+        self._warning_method(
+            input_line,
+            u"A summary pragma was used for this wiki:\n"
+            "\t{0}\n"
+            "Consider moving it to an introductory paragraph."
+            .format(pragma_value))
+      else:
+        output_stream.write("*{0}*\n\n".format(pragma_value))
     elif pragma_type == "sidebar":
       self._warning_method(
           input_line,

@@ -78,6 +78,8 @@ def main(args):
                       action="store_true", help=symmetric_headers_help)
   parser.add_argument("--no_symmetric_headers", dest="symmetric_headers",
                       action="store_false", help=symmetric_headers_help)
+  parser.add_argument("--summary_italic", dest="summary_italic",
+                      action="store_true", help="convert #summary to italic")
   parser.set_defaults(feature=False)
 
   parsed_args, unused_unknown_args = parser.parse_known_args(args)
@@ -100,7 +102,9 @@ def main(args):
       issue_map = {}
 
       # Prepare the handlers and converter.
-      pragma_handler = PragmaHandler(PrintWarning)
+      pragma_handler = PragmaHandler(
+          PrintWarning,
+          parsed_args.summary_italic)
       formatting_handler = FormattingHandler(
           PrintWarning,
           parsed_args.project,
