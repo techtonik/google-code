@@ -30,9 +30,9 @@ import codecs
 import os
 import sys
 
-from impl import converter as converter_mod
-from impl import formatting_handler as formatting_handler_mod
-from impl import pragma_handler as pragma_handler_mod
+from impl.converter import Converter
+from impl.formatting_handler import FormattingHandler
+from impl.pragma_handler import PragmaHandler
 
 
 def PrintWarning(input_line, message):
@@ -100,13 +100,13 @@ def main(args):
       issue_map = {}
 
       # Prepare the handlers and converter.
-      pragma_handler = pragma_handler_mod.PragmaHandler(PrintWarning)
-      formatting_handler = formatting_handler_mod.FormattingHandler(
+      pragma_handler = PragmaHandler(PrintWarning)
+      formatting_handler = FormattingHandler(
           PrintWarning,
           parsed_args.project,
           issue_map,
           parsed_args.symmetric_headers)
-      converter = converter_mod.Converter(
+      converter = Converter(
           pragma_handler,
           formatting_handler,
           PrintWarning,
